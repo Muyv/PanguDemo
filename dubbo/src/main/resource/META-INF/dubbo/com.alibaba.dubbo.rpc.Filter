@@ -1,0 +1,2 @@
+ConsumerFilter=com.joindata.demo.pangu.dubbo.consumer.filter.ConsumerFilter
+ProviderFilter=com.joindata.demo.pangu.dubbo.provider.filter.ProviderFilter

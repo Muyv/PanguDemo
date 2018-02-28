@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+  <title>例子</title>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <div id="app">
+    <h2>用户列表 <small><a href="swagger-ui.html#!/controller/listUserUsingGET">接口文档</a></small></h2>
+    <div>
+      页码：<input type="number" v-model="page" style="width: 3em; padding: .4em" />
+      <button @click="loadUsers()" style="padding: .3em">加载</button>
+    </div>
+    <ul>
+      <li v-for="user in users">{{user}}</li>
+    </ul>
+  </div>
+
+  <script src="//cdn.bootcss.com/vue/2.3.4/vue.js"></script>
+  <script src="//cdn.bootcss.com/vue-resource/1.3.4/vue-resource.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        users: [],
+        page: 1
+      },
+      methods: {
+        loadUsers: function() {
+          this.$http.get('/api/user/?page='+this.page).then(function(response){
+            this.users = response.data.model
+          }, function(error) {
+            alert('出错: '+JSON.stringify(error))
+          })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.0">
+  <bpmn:process id="PublishProcess" name="应用上线流程" isExecutable="true" camunda:versionTag="2.0.1">
+    <bpmn:startEvent id="registPublish" name="申请上线">
+      <bpmn:outgoing>SequenceFlow_1us47jr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1us47jr" sourceRef="registPublish" targetRef="defineAppAttr" />
+    <bpmn:userTask id="defineAppAttr" name="填写项目属性" camunda:candidateGroups="dm">
+      <bpmn:documentation>编写项目属性</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="appId" label="应用 ID" type="string" />
+          <camunda:formField id="appName" label="应用名" type="string" defaultValue="ccp.flora" />
+          <camunda:formField id="version" label="版本号" type="string" defaultValue="1.0.0" />
+        </camunda:formData>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="iddd"><![CDATA[${appName}${version}]]></camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1us47jr</bpmn:incoming>
+      <bpmn:incoming>isNotPrepared</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1h0pzh5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="devWork" name="开发" camunda:candidateGroups="dev">
+      <bpmn:incoming>isPrepared</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ku7d4x</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="appPrepare" name="项目预备" camunda:candidateGroups="scm">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="advice" label="注意事项" type="string" />
+          <camunda:formField id="approve" label="允许上线" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1yuxz6s</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ki0z5a</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1yuxz6s" sourceRef="ExclusiveGateway_1xsyd14" targetRef="appPrepare" />
+    <bpmn:exclusiveGateway id="prepareAllow" name="是否允许上线">
+      <bpmn:incoming>SequenceFlow_0ki0z5a</bpmn:incoming>
+      <bpmn:outgoing>isPrepared</bpmn:outgoing>
+      <bpmn:outgoing>isNotPrepared</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0ki0z5a" sourceRef="appPrepare" targetRef="prepareAllow" />
+    <bpmn:sequenceFlow id="isPrepared" name="是" sourceRef="prepareAllow" targetRef="devWork">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approve}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="isNotPrepared" name="否" sourceRef="prepareAllow" targetRef="defineAppAttr">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not approve}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1ku7d4x" sourceRef="devWork" targetRef="testWork" />
+    <bpmn:userTask id="testWork" name="测试" camunda:candidateGroups="test">
+      <bpmn:incoming>SequenceFlow_1ku7d4x</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0z5a5co</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0z5a5co" sourceRef="testWork" targetRef="publishWork" />
+    <bpmn:userTask id="publishWork" name="上线操作" camunda:candidateGroups="sor">
+      <bpmn:incoming>SequenceFlow_0z5a5co</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0gvkqrb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="finishPublish" name="上线完成">
+      <bpmn:incoming>SequenceFlow_0gvkqrb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0gvkqrb" sourceRef="publishWork" targetRef="finishPublish" />
+    <bpmn:serviceTask id="notifyProgram" name="通知程序" camunda:class="com.joindata.demo.pangu.camunda.biz.service.NotifyService">
+      <bpmn:incoming>SequenceFlow_0p4ajut</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1h0pzh5" sourceRef="defineAppAttr" targetRef="ExclusiveGateway_1xsyd14" />
+    <bpmn:sequenceFlow id="SequenceFlow_0p4ajut" sourceRef="ExclusiveGateway_1xsyd14" targetRef="notifyProgram" />
+    <bpmn:parallelGateway id="ExclusiveGateway_1xsyd14">
+      <bpmn:incoming>SequenceFlow_1h0pzh5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0p4ajut</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1yuxz6s</bpmn:outgoing>
+    </bpmn:parallelGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PublishProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="registPublish">
+        <dc:Bounds x="172" y="131" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="167" width="44" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1us47jr_di" bpmnElement="SequenceFlow_1us47jr">
+        <di:waypoint xsi:type="dc:Point" x="208" y="149" />
+        <di:waypoint xsi:type="dc:Point" x="298" y="149" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="253" y="128" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_09nh8eo_di" bpmnElement="defineAppAttr">
+        <dc:Bounds x="298" y="109" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1pdfqio_di" bpmnElement="devWork">
+        <dc:Bounds x="699" y="256" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_04b4yu6_di" bpmnElement="appPrepare">
+        <dc:Bounds x="530" y="109" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1yuxz6s_di" bpmnElement="SequenceFlow_1yuxz6s">
+        <di:waypoint xsi:type="dc:Point" x="452" y="83" />
+        <di:waypoint xsi:type="dc:Point" x="452" y="149" />
+        <di:waypoint xsi:type="dc:Point" x="530" y="149" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="110" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_17o0urt_di" bpmnElement="prepareAllow" isMarkerVisible="true">
+        <dc:Bounds x="555" y="271" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="547" y="325" width="66" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ki0z5a_di" bpmnElement="SequenceFlow_0ki0z5a">
+        <di:waypoint xsi:type="dc:Point" x="580" y="189" />
+        <di:waypoint xsi:type="dc:Point" x="580" y="271" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="595" y="224" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_043kk4i_di" bpmnElement="isPrepared">
+        <di:waypoint xsi:type="dc:Point" x="605" y="296" />
+        <di:waypoint xsi:type="dc:Point" x="699" y="296" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="647" y="275" width="11" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1auqnik_di" bpmnElement="isNotPrepared">
+        <di:waypoint xsi:type="dc:Point" x="555" y="296" />
+        <di:waypoint xsi:type="dc:Point" x="348" y="296" />
+        <di:waypoint xsi:type="dc:Point" x="348" y="189" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="446" y="275" width="11" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ku7d4x_di" bpmnElement="SequenceFlow_1ku7d4x">
+        <di:waypoint xsi:type="dc:Point" x="749" y="336" />
+        <di:waypoint xsi:type="dc:Point" x="749" y="463" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="764" y="393.5" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0vsly3i_di" bpmnElement="testWork">
+        <dc:Bounds x="699" y="463" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0z5a5co_di" bpmnElement="SequenceFlow_0z5a5co">
+        <di:waypoint xsi:type="dc:Point" x="699" y="503" />
+        <di:waypoint xsi:type="dc:Point" x="560" y="503" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629.5" y="482" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1v1w5zt_di" bpmnElement="publishWork">
+        <dc:Bounds x="460" y="463" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_14c9791_di" bpmnElement="finishPublish">
+        <dc:Bounds x="330" y="485" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="326" y="525" width="44" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gvkqrb_di" bpmnElement="SequenceFlow_0gvkqrb">
+        <di:waypoint xsi:type="dc:Point" x="460" y="503" />
+        <di:waypoint xsi:type="dc:Point" x="366" y="503" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="413" y="482" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0c8wufg_di" bpmnElement="notifyProgram">
+        <dc:Bounds x="530" y="18" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1h0pzh5_di" bpmnElement="SequenceFlow_1h0pzh5">
+        <di:waypoint xsi:type="dc:Point" x="348" y="109" />
+        <di:waypoint xsi:type="dc:Point" x="348" y="58" />
+        <di:waypoint xsi:type="dc:Point" x="427" y="58" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="363" y="77.5" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0p4ajut_di" bpmnElement="SequenceFlow_0p4ajut">
+        <di:waypoint xsi:type="dc:Point" x="477" y="58" />
+        <di:waypoint xsi:type="dc:Point" x="504" y="58" />
+        <di:waypoint xsi:type="dc:Point" x="504" y="58" />
+        <di:waypoint xsi:type="dc:Point" x="530" y="58" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="519" y="52" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_0l2v4az_di" bpmnElement="ExclusiveGateway_1xsyd14">
+        <dc:Bounds x="427" y="33" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="452" y="87" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

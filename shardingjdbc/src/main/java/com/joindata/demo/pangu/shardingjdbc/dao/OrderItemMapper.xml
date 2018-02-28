@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joindata.demo.pangu.shardingjdbc.dao.OrderItemMapper">
+
+	<select id="getOrderItemByOrderId" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.OrderItem">
+		select
+			*
+		from
+			DC_ORDER_ITEM
+		where
+			ORDER_ID = #{orderId}
+	</select>
+	
+	<select id="getOrderItem" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.OrderItem">
+		select
+			*
+		from
+			DC_ORDER_ITEM
+		where
+			ORDER_ID = #{orderId}
+		and
+			ORDER_ITEM_ID = #{orderItemId}
+	</select>
+
+	<insert id="insertOrderItem" parameterType="com.joindata.demo.pangu.shardingjdbc.entity.OrderItem">
+		insert into DC_ORDER_ITEM
+		(
+			ORDER_ITEM_ID,
+			ADDTIME,
+			ORDER_ID,
+			ITEM_NAME
+		)
+		values
+		(
+			#{order_item_id},
+			sysdate(),
+			#{order_id},
+			#{item_name}
+		)
+	</insert>
+
+	<delete id="deleteOrderItemByOrderId" parameterType="long">
+		delete from
+			DC_ORDER_ITEM
+		where
+			ORDER_ID = #{orderId}
+	</delete>
+
+	<delete id="deleteOrderItem" parameterType="long">
+		delete from
+			DC_ORDER_ITEM
+		where
+			ORDER_ID = #{orderId}
+		and
+			ORDER_ITEM_ID = #{orderItemId}
+	</delete>
+	
+	<update id="updateOrder" parameterType="com.joindata.demo.pangu.shardingjdbc.entity.OrderItem">
+		update
+			DC_ORDER_ITEM
+		set
+			ITEM_NAME = #{item_name},
+		where
+			ORDER_ID = #{order_id}
+		and
+			ORDER_ITEM_ID = #{orderItemId}
+	</update>
+</mapper>

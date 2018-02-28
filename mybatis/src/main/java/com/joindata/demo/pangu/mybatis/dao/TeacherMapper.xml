@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joindata.demo.pangu.mybatis.dao.TeacherMapper">
+
+	<select id="get" parameterType="Long" resultType="com.joindata.demo.pangu.mybatis.entity.Teacher">
+		select
+			*
+		from
+			TEACHER
+		where
+			ID = #{id}
+		and
+			DELETED = false
+	</select>
+
+	<select id="getAll" parameterType="Long" resultType="com.joindata.demo.pangu.mybatis.entity.Teacher">
+		select
+			*
+		from
+			TEACHER
+		where
+			DELETED = false
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyColumn="ID" keyProperty="id" parameterType="com.joindata.demo.pangu.mybatis.entity.Teacher">
+		insert into TEACHER
+		(
+			NAME,
+			GENDER,
+			AGE,
+			CREATED,
+			UPDATED
+		)
+		values
+		(
+			#{name},
+			#{gender},
+			#{age},
+			sysdate(),
+			sysdate()
+		)
+	</insert>
+
+	<update id="update" parameterType="com.joindata.demo.pangu.mybatis.entity.Teacher">
+		update
+			TEACHER
+		set
+			NAME	= #{name},
+			GENDER	= #{gender},
+			AGE		= #{age},
+			UPDATED	= sysdate()
+		where
+			ID = #{id}
+	</update>
+	
+	<delete id="setDeleted" parameterType="Long">
+		update
+			TEACHER
+		set
+			DELETED = true
+		where
+			ID = #{id}
+	</delete>
+
+</mapper>

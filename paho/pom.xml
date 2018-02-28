@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.joindata.inf</groupId>
+		<artifactId>joindata-app</artifactId>
+		<version>1.2.0</version>
+		<relativePath />
+	</parent>
+
+	<artifactId>paho</artifactId>
+	<name>Paho MQTT 使用例子</name>
+
+	<version>Paho</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.joindata.inf.common</groupId>
+			<artifactId>swagger-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.joindata.inf.common</groupId>
+			<artifactId>paho-support</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

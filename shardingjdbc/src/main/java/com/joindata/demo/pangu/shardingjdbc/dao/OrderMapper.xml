@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joindata.demo.pangu.shardingjdbc.dao.OrderMapper">
+
+	<select id="getOrderByStoreId" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		select
+			*
+		from
+			DC_ORDER
+		where
+			STORE_ID = #{storeId}
+		and 
+			ORDER_ID = #{orderId}
+	</select>
+
+	<select id="getOrderByUserId" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		select
+			*
+		from
+			DC_ORDER
+		where
+			USER_ID = #{userId}
+		and 
+			ORDER_ID = #{orderId}
+	</select>
+
+	<select id="listStoreOrder" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		select
+			*
+		from
+			DC_ORDER
+		where
+			STORE_ID = #{storeId}
+	</select>
+	
+	<select id="listUserOrder" parameterType="long" resultType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		select
+			*
+		from
+			DC_ORDER
+		where
+			USER_ID = #{userId}
+	</select>
+
+	<insert id="insertOrder" parameterType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		insert into DC_ORDER
+		(
+			ORDER_ID,
+			ORDER_NO,
+			STORE_ID,
+			STORE_NAME,
+			PAY_TYPE,
+			ORDER_TYPE,
+			PHONE,
+			ADDTIME,
+			PEOPLE_NUMBER,
+			TOTELPRICE,
+			USER_ID,
+			TABLE_ID,
+			CONFIG_USER_ID,
+			CONFIG_TIME,
+			VERSION,
+			STATUS,
+			UPDATE_TIME,
+			REMARK,
+			CHANNEL,
+			USERNAME,
+			HEAD_URL,
+			TABLE_NAME,
+			TOTAL_WEIGHT,
+			STORE_TEL,
+			PAY_CONFIG_USER_ID,
+			PAY_CONFIG_TIME,
+			IS_INVOICE,
+			INVOICE_HEADER,
+			IS_READ,
+			INVOICE_TYPE,
+			ATTRIBUTE,
+			EMAIL,
+			EVALUATE_STATUS,
+			PARENT_ID,
+			DRINK_TYPE,
+			ACTIVITY_TYPE,
+			PAID_MONEY,
+			NO_DISCOUNT_MONEY,
+			PAID_DISCOUNT_MONEY,
+			ORDER_DISCOUNT,
+			ACTIVITY_NAME,
+			EAT_NUMBER
+		)
+		values
+		(
+			#{order_id},
+			#{order_no},
+			#{store_id},
+			#{store_name},
+			#{pay_type},
+			#{order_type},
+			#{phone},
+			#{addtime},
+			#{people_number},
+			#{totelprice},
+			#{user_id},
+			#{table_id},
+			#{config_user_id},
+			#{config_time},
+			#{version},
+			#{status},
+			#{update_time},
+			#{remark},
+			#{channel},
+			#{username},
+			#{head_url},
+			#{table_name},
+			#{total_weight},
+			#{store_tel},
+			#{pay_config_user_id},
+			#{pay_config_time},
+			#{is_invoice},
+			#{invoice_header},
+			#{is_read},
+			#{invoice_type},
+			#{attribute},
+			#{email},
+			#{evaluate_status},
+			#{parent_id},
+			#{drink_type},
+			#{activity_type},
+			#{paid_money},
+			#{no_discount_money},
+			#{paid_discount_money},
+			#{order_discount},
+			#{activity_name},
+			#{eat_number}
+		)
+	</insert>
+
+	<delete id="deleteOrder" parameterType="long">
+		delete from
+			DC_ORDER
+		where
+			STORE_ID = #{storeId}
+		and
+			USER_ID = #{storeId}
+		and
+			ORDER_ID = #{orderId}
+	</delete>
+
+	<update id="updateOrder" parameterType="com.joindata.demo.pangu.shardingjdbc.entity.Order">
+		update
+			DC_ORDER
+		set
+		<if test="store_name!=null">
+			STORE_NAME = #{store_name},
+		</if>
+		<if test="pay_type!=null">
+			PAY_TYPE = #{pay_type},
+		</if>
+		<if test="order_type!=null">
+			ORDER_TYPE = #{order_type},
+		</if>
+		<if test="phone!=null">
+			PHONE = #{phone},
+		</if>
+		<if test="addtime!=null">
+			ADDTIME = #{addtime},
+		</if>
+		<if test="people_number!=null">
+			PEOPLE_NUMBER = #{people_number},
+		</if>
+		<if test="totelprice!=null">
+			TOTELPRICE = #{totelprice},
+		</if>
+		<if test="user_id!=null">
+			USER_ID = #{user_id},
+		</if>
+		<if test="table_id!=null">
+			TABLE_ID = #{table_id},
+		</if>
+		<if test="config_user_id!=null">
+			CONFIG_USER_ID = #{config_user_id},
+		</if>
+		<if test="config_time!=null">
+			CONFIG_TIME = #{config_time},
+		</if>
+		<if test="version!=null">
+			VERSION = #{version},
+		</if>
+		<if test="status!=null">
+			STATUS = #{status},
+		</if>
+		<if test="update_time!=null">
+			UPDATE_TIME = #{update_time},
+		</if>
+		<if test="remark!=null">
+			REMARK = #{remark},
+		</if>
+		<if test="channel!=null">
+			CHANNEL = #{channel},
+		</if>
+		<if test="username!=null">
+			USERNAME = #{username},
+		</if>
+		<if test="head_url!=null">
+			HEAD_URL = #{head_url},
+		</if>
+		<if test="table_name!=null">
+			TABLE_NAME = #{table_name},
+		</if>
+		<if test="total_weight!=null">
+			TOTAL_WEIGHT = #{total_weight},
+		</if>
+		<if test="store_tel!=null">
+			STORE_TEL = #{store_tel},
+		</if>
+		<if test="pay_config_user_id!=null">
+			PAY_CONFIG_USER_ID = #{pay_config_user_id},
+		</if>
+		<if test="pay_config_time!=null">
+			PAY_CONFIG_TIME = #{pay_config_time},
+		</if>
+		<if test="is_invoice!=null">
+			IS_INVOICE = #{is_invoice},
+		</if>
+		<if test="invoice_header!=null">
+			INVOICE_HEADER = #{invoice_header},
+		</if>
+		<if test="is_read!=null">
+			IS_READ = #{is_read},
+		</if>
+		<if test="invoice_type!=null">
+			INVOICE_TYPE = #{invoice_type},
+		</if>
+		<if test="attribute!=null">
+			ATTRIBUTE = #{attribute},
+		</if>
+		<if test="email!=null">
+			EMAIL = #{email},
+		</if>
+		<if test="evaluate_status!=null">
+			EVALUATE_STATUS = #{evaluate_status},
+		</if>
+		<if test="parent_id!=null">
+			PARENT_ID = #{parent_id},
+		</if>
+		<if test="drink_type!=null">
+			DRINK_TYPE = #{drink_type},
+		</if>
+		<if test="activity_type!=null">
+			ACTIVITY_TYPE = #{activity_type},
+		</if>
+		<if test="paid_money!=null">
+			PAID_MONEY = #{paid_money},
+		</if>
+		<if test="no_discount_money!=null">
+			NO_DISCOUNT_MONEY = #{no_discount_money},
+		</if>
+		<if test="paid_discount_money!=null">
+			PAID_DISCOUNT_MONEY = #{paid_discount_money},
+		</if>
+		<if test="order_discount!=null">
+			ORDER_DISCOUNT = #{order_discount},
+		</if>
+		<if test="activity_name!=null">
+			ACTIVITY_NAME = #{activity_name},
+		</if>
+		<if test="eat_number!=null">
+			EAT_NUMBER = #{eat_number}
+		</if>
+			ORDER_ID = #{order_id}
+		where
+			STORE_ID = #{store_Id}
+		and
+			USER_ID = #{store_Id}
+		and
+			ORDER_ID = #{order_id}
+	</update>
+</mapper>
